@@ -1,0 +1,16 @@
+{
+  "manifest_version": 2,
+  "name": "Getting started example",
+  "description": "This extension allows the user to change the background color of the current page.",
+  "version": "1.0",
+  "browser_action": {
+    "default_icon": "/images/icon.png",
+    "default_popup": "popup.html"
+  },
+  "permissions": [ "cookies", "tabs", "http://*/*", "https://*/*" ],
+  "content_scripts": [{
+    "matches": ["https://www.foodpanda.com.tw/restaurants/lat/*"],
+    "js": ["content.js"],
+    "run_at": "document_end"
+  }]
+}
