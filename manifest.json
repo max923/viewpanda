@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "name": "Getting started example",
+  "name": "viewpanda",
   "description": "This extension allows the user to change the background color of the current page.",
   "version": "1.0",
   "browser_action": {
@@ -10,7 +10,12 @@
   "permissions": [ "cookies", "tabs", "http://*/*", "https://*/*" ],
   "content_scripts": [{
     "matches": ["https://www.foodpanda.com.tw/restaurants/lat/*"],
-    "js": ["content.js"],
+    "js": [
+      "./utils/formatte.js",
+      "./content/scripts/fetch.js",
+      "./content/scripts/render.js",
+      "./content/index.js"
+    ],
     "run_at": "document_end"
   }]
 }

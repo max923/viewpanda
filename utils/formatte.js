@@ -9,4 +9,7 @@ const formatte = {
     }
   }
 }
-module.exports = formatte
+if (typeof module !== 'undefined') {
+  module.exports = formatte
+}
+
