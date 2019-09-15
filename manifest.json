@@ -7,6 +7,10 @@
     "default_icon": "/images/icon.png",
     "default_popup": "popup.html"
   },
+  "background": {  
+    "persistent": false,  
+    "scripts": ["./background/api.js"]
+  }, 
   "permissions": [ "cookies", "tabs", "http://*/*", "https://*/*" ],
   "content_scripts": [{
     "matches": ["https://www.foodpanda.com.tw/restaurants/lat/*"],
