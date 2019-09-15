@@ -30,7 +30,7 @@ async function fetchPlaceId({ name, location }) {
 async function fetchPlaceDetail({ placeId, location }) {
   try {
     return (
-      await fetch(`https://maps.googleapis.com/maps/api/place/details/json?placeid=${placeId}&locationbias=point:${location}&language=zh-TW&fields=name,rating,reviews,url,formatted_phone_number,formatted_address&key=${googleApiKey}`)
+      await fetch(`https://maps.googleapis.com/maps/api/place/details/json?placeid=${placeId}&locationbias=point:${location}&language=zh-TW&fields=name,photo,rating,reviews,url,formatted_phone_number,formatted_address&key=${googleApiKey}`)
       .then(response => response.json())
     )
   } catch (error) {
