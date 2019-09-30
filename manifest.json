@@ -17,6 +17,7 @@
     "js": [
       "./utils/formatte.js",
       "./content/scripts/fetch.js",
+      "./content/scripts/elements.js",
       "./content/scripts/render.js",
       "./content/index.js"
     ],

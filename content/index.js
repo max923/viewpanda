@@ -46,7 +46,7 @@ async function main() {
         temp.index++
     }
 }
-// main()
+main()
 
 function getRestaurantsContainer() {
     return document.querySelector('.restaurants-container')
