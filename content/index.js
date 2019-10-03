@@ -1,52 +1,83 @@
+// const fetchPlaceDetailPort = chrome.runtime.connect({ name: "fetchPlaceDetail" });
+const fetchVendorsPort = chrome.runtime.connect({ name: "fetchVendors" });
+const fetchVendorDetailPort = chrome.runtime.connect({ name: "fetchVendorDetail" });
+const fetchPlaceDetailPort = chrome.runtime.connect({ name: "fetchPlaceDetail" });
+
 let temp = {
     height: document.documentElement.getBoundingClientRect().height,
     index: 0,
 }
-function init() {
-    // renderToDom(createSideBarElement())(getRestaurantsContainer())
-}
-// init()
-chrome.runtime.onConnect.addListener(function(port) {
-    console.log('content', port.name);
-})
-chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-    console.log(message);
-    const vendorsDom = [...getVendorsDomOfLane(), ...getVendorsDomOfList()]
-    const vendorsData = getDataFrom(vendorsDom)
-    sendResponse({
-        vendorsData,
-        location: {
-            lat: window.location.pathname.split('/')[3],
-            lng: window.location.pathname.split('/')[5]
-        }
-    });
-});
 
-async function main() {
-    const lat = window.location.pathname.split('/')[3],
-        lng = window.location.pathname.split('/')[5]
-    const vendors = await fetchVendors({ lat, lng })
+chrome.runtime.onMessage.addListener( async function(message, sender, sendResponse) {
+    const location = getLocation()
+    fetchVendorsPort.postMessage(location)
+    const vendors = await getVendorsData()
     const vendorsDom = [...getVendorsDomOfLane(), ...getVendorsDomOfList()]
     const currentVendorsDom = vendorsDom.slice(temp.index, vendorsDom.length)
     const currentVendors = await Promise.all(getDataFrom(currentVendorsDom).map(async (d) => {
         if (vendors[d.vendorName]) return vendors[d.vendorName]
-        console.log(d.vendorName)
-        if (d.vendorId) return await fetchVendorDetail(d.vendorId) 
+        // else if (d.vendorId) {
+        //     fetchVendorDetailPort.postMessage(d.vendorId)
+        //     return await getVendorDetail()
+        // }
+        // else return null
     }))
-    const responsive = await Promise.all(currentVendors.map(fetchPlaceDetail))    
-    while(temp.index < responsive.length) {
-        const data = responsive[temp.index]
-        if(data) {
-            const { result } = data
-            const isSamePhonNumber = result.formatted_phone_number === formatte.phoneNumber(currentVendors[temp.index].customer_phone)
-            if(isSamePhonNumber){
-                renderToDom(createReviewElement(result).cloneNode(true))(vendorsDom[temp.index].children[0])
-            }
-        }
+    fetchPlaceDetailPort.postMessage(currentVendors.filter(e => e))
+    const { response } = await getPlaceDetail()
+    handleSideBar(response)
+    while(temp.index < response.length) {
+        const data = response[temp.index]
+        if(data) renderToDom(createReviewElement(data.result).cloneNode(true))(vendorsDom[temp.index].children[0])
         temp.index++
     }
+});
+
+function handleSideBar(response) {
+    document.querySelector('.vendor-list').addEventListener('click', function(e) {
+        if(e.target.parentElement.className === 'vp_gog_review') {
+            e.preventDefault()
+            // const name = e.target.parentElement.getAttribute('data_name')
+            // const index = response.findIndex(e => {
+            //     return e ? e.result.name === name : false
+            // })
+            // var span = document.createElement("span");
+            // document.getElementById('g_sideBar').replaceWith(span)
+            // console.log('index', response[index])
+        }
+    })
+    // document.querySelector('.restaurants-container').appendChild(createSideBarElement())
 }
-main()
+
+function getLocation() {
+    const pathname = window.location.pathname.split('/')
+    const latIndex = pathname.findIndex(p => p === 'lat'),
+            lngIndex = pathname.findIndex(p => p === 'lng')
+    const lat = pathname[latIndex + 1],
+            lng = pathname[lngIndex + 1]
+    return { lat, lng }
+}
+
+function getPlaceDetail() {
+    return new Promise((resolve) => {
+        fetchPlaceDetailPort.onMessage.addListener(function(response) {
+            resolve(response)
+        }); 
+    })
+}
+function getVendorsData() {
+    return new Promise((resolve) => {
+      fetchVendorsPort.onMessage.addListener(function(response) {
+        resolve(response.msg)
+      });
+    })
+}
+function getVendorDetail() {
+    return new Promise((resolve) => {
+        fetchVendorDetailPort.onMessage.addListener(function(response) {
+        resolve(response.msg)
+      });
+    })
+}
 
 function getRestaurantsContainer() {
     return document.querySelector('.restaurants-container')
@@ -72,11 +103,3 @@ function getDataFrom(origin) {
     origin.forEach(handleVendorData)
     return result
 }
-
-// window.addEventListener('scroll', (event) => {
-//     const currentDocHeight =  ocument.documentElement.getBoundingClientRect().height
-//     if(temp.height !== currentDocHeight){
-//         main()
-//         temp.height  = currentDocHeight
-//     }
-// })

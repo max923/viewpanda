@@ -9,15 +9,16 @@
   },
   "background": {  
     "persistent": false,  
-    "scripts": ["./background/api.js"]
+    "scripts": ["./background/api.js", "./background/index.js"]
   }, 
   "permissions": [ "cookies", "tabs", "http://*/*", "https://*/*" ],
   "content_scripts": [{
-    "matches": ["https://www.foodpanda.com.tw/restaurants/lat/*"],
+    "matches": [
+      "https://www.foodpanda.com.tw/restaurants/lat/*",
+      "https://www.foodpanda.com.tw/en/restaurants/lat/*"
+    ],
     "js": [
       "./utils/formatte.js",
-      "./content/scripts/fetch.js",
-      "./content/scripts/elements.js",
       "./content/scripts/render.js",
       "./content/index.js"
     ],

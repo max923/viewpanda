@@ -4,16 +4,8 @@
 //   })
 //   return true;
 // })
-chrome.runtime.onConnect.addListener(function(port) {
-  if(port.name == "fetchVendors"){
-    port.onMessage.addListener(function(message) {
-      fetchAllVendors(message).then(res => {
-        port.postMessage({ msg: res });
-      })
-    })
-  }
-})
 const googleApiKey =  "AIzaSyDlLwBUZJ8vzyoU_Rv_hoBKfG_ZabFvWes"
+
 async function fetchAllVendors({lat, lng }) {
   const config = {
     headers: {
@@ -24,6 +16,13 @@ async function fetchAllVendors({lat, lng }) {
     return (
       await fetch(`https://tw.fd-api.com/api/v5/vendors?new_sorting=true&latitude=${lat}&longitude=${lng}&include=metadata&language_id=6&vertical=restaurants`, config)
       .then(response => response.json())
+      .then(response => {
+        const result = {}
+        response.data.items.forEach(v => {
+          result[v.name] = v
+        })
+        return result
+      })
     )
   } catch (error) {
     console.log(`error: ${error}`)
