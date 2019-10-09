@@ -1,9 +1,10 @@
 
 function isSameAdress() {
-  
+
 }
 
-async function handleFetchPlaceDetail(vendor={}) {
+async function handleFetchPlaceDetail(vendor) {
+  if(!vendor) return null
   let { name, latitude='', longitude='' } = vendor  
   if(!name) return null
   else { 

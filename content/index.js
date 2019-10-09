@@ -16,13 +16,9 @@ chrome.runtime.onMessage.addListener( async function(message, sender, sendRespon
     const currentVendorsDom = vendorsDom.slice(temp.index, vendorsDom.length)
     const currentVendors = await Promise.all(getDataFrom(currentVendorsDom).map(async (d) => {
         if (vendors[d.vendorName]) return vendors[d.vendorName]
-        // else if (d.vendorId) {
-        //     fetchVendorDetailPort.postMessage(d.vendorId)
-        //     return await getVendorDetail()
-        // }
-        // else return null
-    }))
-    fetchPlaceDetailPort.postMessage(currentVendors.filter(e => e))
+        return { name: d.vendorName, latitude: '', longitude: ''  }
+    }))    
+    fetchPlaceDetailPort.postMessage(currentVendors)
     const { response } = await getPlaceDetail()
     handleSideBar(response)
     while(temp.index < response.length) {
@@ -36,16 +32,20 @@ function handleSideBar(response) {
     document.querySelector('.vendor-list').addEventListener('click', function(e) {
         if(e.target.parentElement.className === 'vp_gog_review') {
             e.preventDefault()
-            // const name = e.target.parentElement.getAttribute('data_name')
-            // const index = response.findIndex(e => {
-            //     return e ? e.result.name === name : false
-            // })
-            // var span = document.createElement("span");
-            // document.getElementById('g_sideBar').replaceWith(span)
-            // console.log('index', response[index])
+            const name = e.target.parentElement.getAttribute('data_name')
+            const index = response.findIndex(e => {
+                return e ? e.result.name === name : false
+            })
+            console.log(createSideBarContainer(response[index].result));
+            
+            
+            const gSideBarContainerDom = document.getElementById('g_sideBar_container')
+            document.getElementById('g_sideBar').style.display = 'block'
+            if (gSideBarContainerDom) gSideBarContainerDom.replaceWith(createSideBarContainer(response[index].result))
+            else document.getElementById('g_sideBar').appendChild(createSideBarContainer(response[index].result))
         }
     })
-    // document.querySelector('.restaurants-container').appendChild(createSideBarElement())
+    document.querySelector('.restaurants-container').appendChild(createSideBarElement())
 }
 
 function getLocation() {
