@@ -12,6 +12,7 @@
         }
 
         button {
+            position: relative;
             margin: 10px;
             outline: none;
             border: none;
@@ -20,6 +21,11 @@
             padding: 10px 8px;
             color: #fff;
             border-radius: 3px;
+        }
+        button:hover{
+            cursor: pointer;
+            right: -1px;
+            bottom: -1px;
         }
     </style>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.12/css/all.css" integrity="sha384-G0fIWCsCzJIMAVNQPfjH08cyYaUtMwjJwqiRKxxE/rx96Uroj1BtIQ6MLJuheaO9"
@@ -30,7 +36,7 @@
     <div>
       <div></div>
       <button id="button">
-        Google Reviews
+        Load More
       </button>
     </div>
     <script type="text/javascript" src="popup.js"></script>

@@ -4,7 +4,7 @@ const SideBarElmentTree = () => ({
     style: `
       position: fixed;
       width: 75%;
-      height: 55vh;
+      height: 60vh;
       background: #fff;
       z-index: 9999;
       padding: 0 15px;
@@ -15,12 +15,34 @@ const SideBarElmentTree = () => ({
       top: 0;
       margin: auto;
       border-radius: 5px;
-      overflow: scroll;
       display: none;
     `,
     id: 'g_sideBar',
   },
-  children: []
+  children: [
+    createElementWith('div', {
+      attribute: {
+        id: 'g_popup_close',
+        style: `
+          width: 25px;
+          height: 25px;
+          position: absolute;
+          border-radius: 50%;
+          right: -6px;
+          top: -8px;
+          background: #d80f64;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: #fff;
+          font-weight: bold;
+          cursor: pointer;
+        `,
+      },
+      html: 'X',
+      children: []
+    }),
+  ]
 })
 const SideBarContainerElmentTree = (data) => ({
   tagName: 'div',
@@ -28,7 +50,10 @@ const SideBarContainerElmentTree = (data) => ({
     id: 'g_sideBar_container',
     style: `
       display: flex;
-      flex-direction: row;
+      flex-direction: column;
+      overflow: scroll;
+      height: 100%;
+      background: rgb(255, 255, 255);
     `,
   },
   children: [
@@ -41,66 +66,52 @@ const SideBarContainerElmentTree = (data) => ({
         `,
       }
     }),
+    createElementWith('a', {
+      attribute: {
+        style: `
+          font-size: 18px;
+          font-weight: 500;
+          margin-bottom: 0;
+        `,
+        href: `${data.url}`,
+        target: '_blank'
+      },
+      html: `${data.name}`
+    }),
     createElementWith('ul', {
       attribute: {
         style: `
-          margin-left: 20px;
           margin-top: 15px;
           list-style: none;
           padding: 0;
         `,
       },
       children: [ ...createReviewsElement(data.reviews) ]
-    })
+    }),
   ]
 })
 const ReviewElementTree = ({ name, rating }) => ({
   tagName: 'div',
   attribute: {
-    style: `
-      height: 28px;
-      text-align: right;
-      margin-bottom: -10px;
-      display: flex;
-      align-items: center;
-    `,
     class: 'vp_gog_review',
     data_name: `${name}`,
   },
   children: [
     createElementWith('span', {
       attribute: {
-        style: `
-          flex: 1;
-          color: #D70F64;
-          font-size: 12px;
-          font-weight: normal;
-          margin-right: 3px;
-          text-overflow: ellipsis;
-          white-space: nowrap;
-          word-wrap: normal;
-          overflow: hidden;
-        `,
+        class: 'vp_gog_review_name',
       },
       html: `${name}`
     }),
     createElementWith('span', {
       attribute: {
-        style: `
-          font-weight: bold;
-          font-size: 14px;
-        `,
+        class: 'vp_gog_review_rating',
       },
       html: `${rating}`
     }),
     createElementWith('span', {
       attribute: {
-        style: `
-          font-size: 11px;
-          margin-left: 5px;
-          color: #1b1a1a;
-          min-width: 67px;
-        `,
+        class: 'vp_gog_review_type',
       },
       html: 'Google評論'
     })
@@ -114,8 +125,6 @@ function renderToDom(element) {
 }
 
 function createReviewElement(data) {
-  console.log('ReviewElementTree', ReviewElementTree(data));
-  
   const wrapper = render(ReviewElementTree(data))
   return wrapper
 }
@@ -127,7 +136,6 @@ function createReviewsElement(data=[]) {
           margin: 0;
           font-size: 12px;
           font-weight: bold;
-          border-bottom: solid 1px #ddd;
           padding-bottom: 5px;
           margin-bottom: 10px;
         `,
@@ -183,7 +191,13 @@ function createReviewsElement(data=[]) {
           ]
         }),
         createElementWith('p', {
-          attribute: {},
+          attribute: {
+            style: `
+              margin: 0;
+              border-bottom: solid 1px #e4e4e47d;
+              padding-bottom: 5px;
+            `
+          },
           html: `${d.text}`,
           children: []
         })

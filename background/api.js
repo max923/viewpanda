@@ -1,9 +1,3 @@
-// chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {  
-//   fetchAllVendors(message.location).then(res => {
-//     sendResponse({ content: res })
-//   })
-//   return true;
-// })
 const googleApiKey =  "AIzaSyDlLwBUZJ8vzyoU_Rv_hoBKfG_ZabFvWes"
 
 async function fetchAllVendors({lat, lng }) {

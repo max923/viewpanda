@@ -1,51 +1,102 @@
-// const fetchPlaceDetailPort = chrome.runtime.connect({ name: "fetchPlaceDetail" });
 const fetchVendorsPort = chrome.runtime.connect({ name: "fetchVendors" });
 const fetchVendorDetailPort = chrome.runtime.connect({ name: "fetchVendorDetail" });
 const fetchPlaceDetailPort = chrome.runtime.connect({ name: "fetchPlaceDetail" });
 
-let temp = {
+let status = {
     height: document.documentElement.getBoundingClientRect().height,
     index: 0,
 }
 
-chrome.runtime.onMessage.addListener( async function(message, sender, sendResponse) {
+chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
+    main()
+});
+
+async function main() {
     const location = getLocation()
     fetchVendorsPort.postMessage(location)
     const vendors = await getVendorsData()
-    const vendorsDom = [...getVendorsDomOfLane(), ...getVendorsDomOfList()]
-    const currentVendorsDom = vendorsDom.slice(temp.index, vendorsDom.length)
+    const vendorsDom = [...getVendorsDomOfLane(), ...getVendorsDomOfList()]    
+    const currentVendorsDom = vendorsDom.slice(status.index, vendorsDom.length)
     const currentVendors = await Promise.all(getDataFrom(currentVendorsDom).map(async (d) => {
         if (vendors[d.vendorName]) return vendors[d.vendorName]
         return { name: d.vendorName, latitude: '', longitude: ''  }
     }))    
     fetchPlaceDetailPort.postMessage(currentVendors)
     const { response } = await getPlaceDetail()
+    createStyle()
     handleSideBar(response)
-    while(temp.index < response.length) {
-        const data = response[temp.index]
-        if(data) renderToDom(createReviewElement(data.result).cloneNode(true))(vendorsDom[temp.index].children[0])
-        temp.index++
+    for(let i = 0; i< response.length; i++) {
+        const data = response[i]
+        if(data) renderToDom(createReviewElement(data.result).cloneNode(true))(vendorsDom[status.index].children[0])
+        status.index++
     }
-});
+}
+main()
+
+function createStyle() {
+    const style = document.createElement('style');
+    style.innerHTML = `
+        .vp_gog_review{
+            position: relative;
+            height: 30px;
+            text-align: right;
+            margin-bottom: -10px;
+            display: flex;
+            align-items: center;
+        }
+        .vp_gog_review:hover{
+            right: -1px;
+            bottom: -1px;
+        }
+        .vp_gog_review_name{
+            flex: 1;
+            color: #D70F64;
+            font-size: 12px;
+            font-weight: normal;
+            margin-right: 3px;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            word-wrap: normal;
+            overflow: hidden;
+        }
+        .vp_gog_review_rating{
+            font-weight: bold;
+            font-size: 14px;
+        }
+        .vp_gog_review_type{
+            font-size: 11px;
+            margin-left: 5px;
+            color: #1b1a1a;
+            min-width: 67px;
+        }
+    `;
+    document.head.appendChild(style);
+}
 
 function handleSideBar(response) {
-    document.querySelector('.vendor-list').addEventListener('click', function(e) {
-        if(e.target.parentElement.className === 'vp_gog_review') {
-            e.preventDefault()
-            const name = e.target.parentElement.getAttribute('data_name')
-            const index = response.findIndex(e => {
-                return e ? e.result.name === name : false
-            })
-            console.log(createSideBarContainer(response[index].result));
-            
-            
-            const gSideBarContainerDom = document.getElementById('g_sideBar_container')
-            document.getElementById('g_sideBar').style.display = 'block'
-            if (gSideBarContainerDom) gSideBarContainerDom.replaceWith(createSideBarContainer(response[index].result))
-            else document.getElementById('g_sideBar').appendChild(createSideBarContainer(response[index].result))
-        }
+    const vendorUl = [
+        ...Array.prototype.slice.call(document.querySelectorAll('.vendor-lane')),
+        ...Array.prototype.slice.call(document.querySelectorAll('.vendor-list'))
+    ]
+    vendorUl.forEach(element => {
+        element.addEventListener('click', function(e) {
+            if(e.target.parentElement.className === 'vp_gog_review') {
+                e.preventDefault()
+                const name = e.target.parentElement.getAttribute('data_name')
+                const index = response.findIndex(e => {
+                    return e ? e.result.name === name : false
+                })
+                const gSideBarContainerDom = document.getElementById('g_sideBar_container')
+                document.getElementById('g_sideBar').style.display = 'block'
+                if (gSideBarContainerDom) gSideBarContainerDom.replaceWith(createSideBarContainer(response[index].result))
+                else document.getElementById('g_sideBar').appendChild(createSideBarContainer(response[index].result))
+            }
+        })
     })
     document.querySelector('.restaurants-container').appendChild(createSideBarElement())
+    document.getElementById('g_popup_close').addEventListener('click', function() {
+        document.getElementById('g_sideBar').style.display = 'none'
+    })
 }
 
 function getLocation() {

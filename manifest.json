@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
   "name": "viewpanda",
-  "description": "This extension allows the user to change the background color of the current page.",
-  "version": "1.0",
+  "description": "A chrome extension to browse google reviews in foodpanda web page.",
+  "version": "1.2",
   "browser_action": {
     "default_icon": "/images/icon.png",
     "default_popup": "popup.html"
@@ -11,14 +11,13 @@
     "persistent": false,  
     "scripts": ["./background/api.js", "./background/index.js"]
   }, 
-  "permissions": [ "cookies", "tabs", "http://*/*", "https://*/*" ],
+  "permissions": [ "https://www.foodpanda.com.tw/*", "https://maps.googleapis.com/maps/api/*" ],
   "content_scripts": [{
     "matches": [
       "https://www.foodpanda.com.tw/restaurants/lat/*",
       "https://www.foodpanda.com.tw/en/restaurants/lat/*"
     ],
     "js": [
-      "./utils/formatte.js",
       "./content/scripts/render.js",
       "./content/index.js"
     ],

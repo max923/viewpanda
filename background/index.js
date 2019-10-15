@@ -1,8 +1,3 @@
-
-function isSameAdress() {
-
-}
-
 async function handleFetchPlaceDetail(vendor) {
   if(!vendor) return null
   let { name, latitude='', longitude='' } = vendor  
@@ -27,9 +22,7 @@ chrome.runtime.onConnect.addListener(function(port) {
         break;
       case 'fetchPlaceDetail':
         const placeDetailList = await Promise.all(data.map( vendor => handleFetchPlaceDetail(vendor)))
-        
         console.log('placeDetailList', placeDetailList);
-        
         port.postMessage({ response: await Promise.all(data.map( vendor => handleFetchPlaceDetail(vendor))) });
         break;
       default:
