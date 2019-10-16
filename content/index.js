@@ -27,14 +27,17 @@ async function main() {
     handleSideBar(response)
     for(let i = 0; i< response.length; i++) {
         const data = response[i]
+        const vendor = currentVendors[i]        
         if(data){
             const arg1 = new RegExp(data.result.composeAddress[0]);
-            const arg2 = new RegExp(data.result.composeAddress[1]);
-            if(arg1.test(currentVendors[i].address) || arg2.test(currentVendors[i].address)) {
-                renderToDom(createReviewElement(data.result).cloneNode(true))(vendorsDom[status.index].children[0])
-            } else {
-                renderToDom(createReviewElement(Object.assign({ notMatch: true }, data.result)).cloneNode(true))(vendorsDom[status.index].children[0])
-            }   
+            const arg2 = new RegExp(data.result.composeAddress[1]);            
+            if(data.result.name === vendor.name) {
+                renderToDom(createReviewElement(data.result).cloneNode(true))(vendorsDom[status.index].querySelector('figure'))
+            }
+            else if(arg1.test(vendor.address) || arg2.test(vendor.address)) {
+                renderToDom(createReviewElement(data.result).cloneNode(true))(vendorsDom[status.index].querySelector('figure'))
+            }
+            else renderToDom(createReviewElement(Object.assign({ notMatch: true }, data.result)).cloneNode(true))(vendorsDom[status.index].querySelector('figure'))
         }
         status.index++
     }

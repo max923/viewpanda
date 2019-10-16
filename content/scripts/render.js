@@ -63,6 +63,7 @@ const SideBarContainerElmentTree = (data) => ({
           font-size: 20px;
           font-weight: 500;
           margin-bottom: 0;
+          margin-top: 8px;
         `,
         href: `${data.url}`,
         target: '_blank'
