@@ -27,7 +27,15 @@ async function main() {
     handleSideBar(response)
     for(let i = 0; i< response.length; i++) {
         const data = response[i]
-        if(data) renderToDom(createReviewElement(data.result).cloneNode(true))(vendorsDom[status.index].children[0])
+        if(data){
+            const arg1 = new RegExp(data.result.composeAddress[0]);
+            const arg2 = new RegExp(data.result.composeAddress[1]);
+            if(arg1.test(currentVendors[i].address) || arg2.test(currentVendors[i].address)) {
+                renderToDom(createReviewElement(data.result).cloneNode(true))(vendorsDom[status.index].children[0])
+            } else {
+                renderToDom(createReviewElement(Object.assign({ notMatch: true }, data.result)).cloneNode(true))(vendorsDom[status.index].children[0])
+            }   
+        }
         status.index++
     }
 }
@@ -43,6 +51,9 @@ function createStyle() {
             margin-bottom: -10px;
             display: flex;
             align-items: center;
+        }
+        .notmatch span{
+            color: #a9a9a9;
         }
         .vp_gog_review:hover{
             right: -1px;

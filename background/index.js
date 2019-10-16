@@ -22,11 +22,43 @@ chrome.runtime.onConnect.addListener(function(port) {
         break;
       case 'fetchPlaceDetail':
         const placeDetailList = await Promise.all(data.map( vendor => handleFetchPlaceDetail(vendor)))
-        console.log('placeDetailList', placeDetailList);
-        port.postMessage({ response: await Promise.all(data.map( vendor => handleFetchPlaceDetail(vendor))) });
+        const result = placeDetailList.map(vendor => {
+          if(vendor) {
+            vendor.result.composeAddress = refolowAdressList(vendor.result.address_components)
+            return vendor
+          }
+          return null
+        })        
+        port.postMessage({ response: result });
         break;
       default:
         break;
     }
   })
 })
+
+function refolowAdressList(addressComponents) {   
+  const chnNumChar = { 零:0, 一:1, 二:2, 三:3, 四:4, 五:5, 六:6, 七:7, 八:8, 九:9 } 
+  let result = [],
+      addr1 = '',
+      addr2 = ''
+  for(var i = addressComponents.length-1; i >= 0; i--){
+      if(addressComponents[i].types[0] === 'administrative_area_level_1') {
+          addr1 += addressComponents[i].long_name
+      } else if(addressComponents[i].types[0] === 'administrative_area_level_3') {
+          addr1 += addressComponents[i].long_name
+      } else if(addressComponents[i].types[0] ==='route') {
+          addr1 += addressComponents[i].long_name
+      }
+  }
+  result.push(addr1)
+  for(let i = 0; i < addr1.length; i++) {
+      if(addr1[i+1] === '段'){
+          addr2 += chnNumChar[addr1[i]]
+      } else {
+          addr2 += addr1[i]
+      }
+  }
+  result.push(addr2)
+  return result
+}

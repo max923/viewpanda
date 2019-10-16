@@ -90,10 +90,10 @@ const SideBarContainerElmentTree = (data) => ({
     }),
   ]
 })
-const ReviewElementTree = ({ name, rating }) => ({
+const ReviewElementTree = ({ name, rating, notMatch=false }) => ({
   tagName: 'div',
   attribute: {
-    class: 'vp_gog_review',
+    class: notMatch ? 'vp_gog_review notmatch' : 'vp_gog_review',
     data_name: `${name}`,
   },
   children: [

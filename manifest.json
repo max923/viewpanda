@@ -15,7 +15,9 @@
   "content_scripts": [{
     "matches": [
       "https://www.foodpanda.com.tw/restaurants/lat/*",
-      "https://www.foodpanda.com.tw/en/restaurants/lat/*"
+      "https://www.foodpanda.com.tw/en/restaurants/lat/*",
+      "https://www.foodpanda.sg/zh/restaurants/lat/*",
+      "https://www.foodpanda.sg/restaurants/lat/*"
     ],
     "js": [
       "./content/scripts/render.js",
