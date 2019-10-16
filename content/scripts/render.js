@@ -7,7 +7,7 @@ const SideBarElmentTree = () => ({
       height: 60vh;
       background: #fff;
       z-index: 9999;
-      padding: 0 15px;
+      padding: 10px 15px;
       box-shadow: 10px 10px 30px #656363;
       bottom: 0;
       right: 0;
@@ -57,19 +57,10 @@ const SideBarContainerElmentTree = (data) => ({
     `,
   },
   children: [
-    createElementWith('picture', {
-      attribute: {
-        style: `
-          flex: 1;
-          max-width: 200px;
-          margin-top: 15px;
-        `,
-      }
-    }),
     createElementWith('a', {
       attribute: {
         style: `
-          font-size: 18px;
+          font-size: 20px;
           font-weight: 500;
           margin-bottom: 0;
         `,
@@ -77,6 +68,16 @@ const SideBarContainerElmentTree = (data) => ({
         target: '_blank'
       },
       html: `${data.name}`
+    }),
+    createElementWith('p', {
+      attribute: {
+        style: `
+          font-size: 13px;
+          margin: 0;
+        `,
+      },
+      html: `${data.formatted_address}`,
+      children: []
     }),
     createElementWith('ul', {
       attribute: {
