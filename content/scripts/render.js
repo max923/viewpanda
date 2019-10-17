@@ -187,7 +187,7 @@ function createReviewsElement(data=[]) {
             }),
             createElementWith('span', {
               attribute: {},
-              html: `${d.rating}/5`,
+              html: `${d.rating.toFixed(1)}/5`,
               children: []
             })
           ]
