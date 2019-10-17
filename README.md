@@ -9,7 +9,7 @@ Viewpanda is a chrome extension plugin, you can browse google reviews by vendors
 
 You can click google review block, it will show you more detail about vendor in google.
 
-![vendor review popup](https://github.com/max923/viewpanda/blob/master/images/image2.png)
+![vendor review popup](https://github.com/max923/viewpanda/blob/master/images/image3.png)
 
 
 
