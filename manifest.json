@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "viewpanda",
-  "description": "A chrome extension to browse google reviews in foodpanda web page.",
+  "description": "This chrome extension let you have more information from google reviews before ordering in foodpanda.",
   "version": "1.4",
   "browser_action": {
     "default_icon": "/images/icon128.png",
