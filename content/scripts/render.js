@@ -109,7 +109,7 @@ const ReviewElementTree = ({ name, rating, notMatch=false }) => ({
       attribute: {
         class: 'vp_gog_review_rating',
       },
-      html: `${rating.toFixed(1)}`
+      html: `${rating ? rating.toFixed(1) : rating}`
     }),
     createElementWith('span', {
       attribute: {

@@ -29,6 +29,8 @@ chrome.runtime.onConnect.addListener(function(port) {
           }
           return null
         })
+        console.log('fetchPlaceDetail', result);
+        
         port.postMessage({ response: result });
         break;
       default:

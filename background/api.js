@@ -1,5 +1,7 @@
-const googleApiKey =  "AIzaSyDlLwBUZJ8vzyoU_Rv_hoBKfG_ZabFvWes"
 
+const getAPIKey = () => {
+  return googleApiKeys[Math.floor(Math.random() * googleApiKeys.length)]
+}
 async function fetchAllVendors({lat, lng }) {
   const config = {
     headers: {
@@ -25,7 +27,7 @@ async function fetchAllVendors({lat, lng }) {
 async function fetchPlaceId({ name, location }) {
   try {
     return (
-      await fetch(`https://maps.googleapis.com/maps/api/place/findplacefromtext/json?key=${googleApiKey}&input=${name}&inputtype=textquery&type=restaurant&locationbias=point:${location}&radius=1500`)
+      await fetch(`https://maps.googleapis.com/maps/api/place/findplacefromtext/json?key=${getAPIKey()}&input=${name}&inputtype=textquery&type=restaurant&locationbias=point:${location}&radius=1500`)
       .then(response => response.json())
       .then(response => response.candidates)
     )
@@ -36,7 +38,7 @@ async function fetchPlaceId({ name, location }) {
 async function fetchPlaceDetail({ placeId, location }) {
   try {
     return (
-      await fetch(`https://maps.googleapis.com/maps/api/place/details/json?placeid=${placeId}&locationbias=point:${location}&language=zh-TW&fields=name,icon,photo,rating,reviews,url,formatted_phone_number,formatted_address,address_component,adr_address&key=${googleApiKey}`)
+      await fetch(`https://maps.googleapis.com/maps/api/place/details/json?placeid=${placeId}&locationbias=point:${location}&language=zh-TW&fields=name,photo,rating,reviews,url,formatted_address,address_component&key=${getAPIKey()}`)
       .then(response => response.json())
     )
   } catch (error) {

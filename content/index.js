@@ -1,7 +1,6 @@
 const fetchVendorsPort = chrome.runtime.connect({ name: "fetchVendors" });
 const fetchVendorDetailPort = chrome.runtime.connect({ name: "fetchVendorDetail" });
 const fetchPlaceDetailPort = chrome.runtime.connect({ name: "fetchPlaceDetail" });
-
 let status = {
     height: document.documentElement.getBoundingClientRect().height,
     index: 0,
@@ -23,7 +22,6 @@ async function main() {
     }))    
     fetchPlaceDetailPort.postMessage(currentVendors)
     const { response } = await getPlaceDetail()
-    createStyle()
     handleSideBar(response)
     for(let i = 0; i< response.length; i++) {
         const data = response[i]
@@ -42,6 +40,7 @@ async function main() {
         status.index++
     }
 }
+createStyle()
 main()
 
 function createStyle() {

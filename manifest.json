@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "viewpanda",
   "description": "This chrome extension let you have more information from google reviews before ordering in foodpanda.",
-  "version": "1.7",
+  "version": "1.8",
   "browser_action": {
     "default_icon": "/images/icon128.png",
     "default_popup": "popup.html"
@@ -14,7 +14,7 @@
   },
   "background": {  
     "persistent": false,  
-    "scripts": ["./background/api.js", "./background/index.js"]
+    "scripts": ["./config.js","./background/api.js", "./background/index.js"]
   }, 
   "permissions": [ "https://www.foodpanda.com.tw/*", "https://maps.googleapis.com/maps/api/*" ],
   "content_scripts": [{
