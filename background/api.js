@@ -1,16 +1,15 @@
 
 const getAPIKey = () => {
-  return googleApiKeys[Math.floor(Math.random() * googleApiKeys.length)]
+  return config.tw.apiKeys[Math.floor(Math.random() * config.tw.apiKeys.length)]
 }
-async function fetchAllVendors({lat, lng }) {
-  const config = {
-    headers: {
-      'X-FP-API-KEY': 'volo'
-    },
-  }
+async function fetchAllVendors({lat, lng, country }) {
   try {
     return (
-      await fetch(`https://tw.fd-api.com/api/v5/vendors?new_sorting=true&latitude=${lat}&longitude=${lng}&include=metadata&language_id=6&vertical=restaurants`, config)
+      await fetch(config[country].host({ lat, lng }), {
+        headers: {
+          'X-FP-API-KEY': 'volo'
+        },
+      })
       .then(response => response.json())
       .then(response => {
         const result = {}
@@ -46,14 +45,13 @@ async function fetchPlaceDetail({ placeId, location }) {
   }
 }
 async function fetchVendorDetail(vendorId) {
-  const config = {
-    headers: {
-      'X-FP-API-KEY': 'volo'
-    },
-  }
   try {
     return (
-      await fetch(`https://tw.fd-api.com/api/v5/vendors/${vendorId}?language_id=6&vertical=restaurants`, config)
+      await fetch(`https://tw.fd-api.com/api/v5/vendors/${vendorId}?language_id=6&vertical=restaurants`, {
+        headers: {
+          'X-FP-API-KEY': 'volo'
+        },
+      })
       .then(response => response.json())
     )
   } catch (error) {

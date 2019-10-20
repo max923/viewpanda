@@ -12,23 +12,24 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 
 async function main() {
     const location = getLocation()
-    fetchVendorsPort.postMessage(location)
+    fetchVendorsPort.postMessage(location, )
     const vendors = await getVendorsData()
     const vendorsDom = [...getVendorsDomOfLane(), ...getVendorsDomOfList()]    
     const currentVendorsDom = vendorsDom.slice(status.index, vendorsDom.length)
-    const currentVendors = await Promise.all(getDataFrom(currentVendorsDom).map(async (d) => {
+    const currentVendors = getDataFrom(currentVendorsDom).map((d) => {        
         if (vendors[d.vendorName]) return vendors[d.vendorName]
         return { name: d.vendorName, latitude: '', longitude: ''  }
-    }))    
+    })
     fetchPlaceDetailPort.postMessage(currentVendors)
     const { response } = await getPlaceDetail()
     handleSideBar(response)
     for(let i = 0; i< response.length; i++) {
         const data = response[i]
-        const vendor = currentVendors[i]        
-        if(data){
+        const vendor = currentVendors[i]      
+        if(data && data.result.rating){
+            // console.log('vendor: ', currentVendors, 'place: ',data.result.composeAddress[0]);
             const arg1 = new RegExp(data.result.composeAddress[0]);
-            const arg2 = new RegExp(data.result.composeAddress[1]);            
+            const arg2 = new RegExp(data.result.composeAddress[1]);     
             if(data.result.name === vendor.name) {
                 renderToDom(createReviewElement(data.result).cloneNode(true))(vendorsDom[status.index].querySelector('figure'))
             }
@@ -118,7 +119,9 @@ function getLocation() {
             lngIndex = pathname.findIndex(p => p === 'lng')
     const lat = pathname[latIndex + 1],
             lng = pathname[lngIndex + 1]
-    return { lat, lng }
+            host = window.location.host.split('.')
+    const country = host[host.length -1]
+    return { lat, lng, country }
 }
 
 function getPlaceDetail() {
